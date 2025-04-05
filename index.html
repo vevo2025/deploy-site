@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Jinwoo Deployment</title>
+  <link rel="stylesheet" href="css/all.min.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      font-family: 'Roboto', sans-serif;
+      color: #fff;
+      background: linear-gradient(45deg, #ff0040, #8c00ff, #0044ff, #00c6ff, #00ff92, #ffeb00, #ff7700);
+      background-size: 400% 400%;
+      animation: gradientAnimation 6s infinite;
+    }
+
+    @keyframes gradientAnimation {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .container {
+      text-align: center;
+      background: rgba(0, 0, 0, 0.8);
+      padding: 40px;
+      width: 90%;
+      max-width: 500px;
+      border-radius: 20px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+      animation: scaleUp 1.5s ease-in-out;
+    }
+
+    .input, .button {
+      width: 100%;
+      padding: 15px;
+      font-size: 17px;
+      border-radius: 10px;
+      margin-top: 15px;
+      border: none;
+      outline: none;
+    }
+
+    .input {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      border: 2px solid #555;
+    }
+
+    .input:focus {
+      border-color: #00ff92;
+      box-shadow: 0 0 10px #00ff92;
+    }
+
+    .button {
+      font-weight: bold;
+      background: linear-gradient(45deg, #ff0040, #8c00ff, #0044ff);
+      color: #fff;
+      cursor: pointer;
+      transition: 0.5s;
+      border-radius: 10px;
+      border: none;
+    }
+
+    .button:hover {
+      background: linear-gradient(45deg, #00ff92, #ffeb00, #ff7700);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    }
+
+    .fork-section {
+      margin-top: 20px;
+      display: none;
+      font-size: 16px;
+    }
+
+    .fork-button {
+      padding: 15px;
+      font-size: 16px;
+      font-weight: bold;
+      color: white;
+      background-color: #ff7700;
+      border-radius: 10px;
+      text-decoration: none;
+      display: inline-block;
+      transition: 0.3s ease;
+    }
+
+    .fork-button:hover {
+      background-color: #ff0040;
+    }
+
+    .redirect-link {
+      display: none;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+
+    .redirect-link a {
+      color: #00ff92;
+      text-decoration: underline;
+    }
+
+    #statusMessage {
+      color: yellow;
+      font-weight: bold;
+      margin-top: 20px;
+      font-size: 18px;
+    }
+
+    /* Smooth entry animations */
+    @keyframes scaleUp {
+      0% {
+        transform: scale(0);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h2>Welcome to Jinwoo Deployment</h2>
+    <form onsubmit="return handleUsernameInput();">
+      <input placeholder="Enter Your GitHub Username" class="input" id="githubUsername" type="text" />
+      <div id="passwordSection" style="display: none;">
+        <input placeholder="Enter Password" class="input" id="passwordInput" type="password" />
+      </div>
+      <button class="button" type="submit">Proceed</button>
+    </form>
+    <div id="statusMessage"></div>
+    <div id="forkSection" class="fork-section">
+      <p>Ensure you have the latest forked version of the JINWOO-V4 repository.</p>
+      <a href="https://github.com/XdKing2/Jinwoo-v4/fork" target="_blank" class="fork-button">Fork Jinwoo-v4 Repository</a>
+    </div>
+    <div id="redirectLink" class="redirect-link">
+      <p>Proceeding to pairing portal...</p>
+    </div>
+  </div>
+
+  <script>
+    const correctPassword = "malvin266";
+
+    async function doesGitHubRepoExist(owner, repo) {
+      try {
+        const res = await fetch(`https://api.github.com/repos/${owner}/${repo}`);
+        return res.status === 200;
+      } catch {
+        return false;
+      }
+    }
+
+    function handleUsernameInput() {
+      const username = document.getElementById("githubUsername").value.trim();
+      const passwordInput = document.getElementById("passwordInput");
+      const passwordSection = document.getElementById("passwordSection");
+      const statusMessage = document.getElementById("statusMessage");
+      const forkSection = document.getElementById("forkSection");
+      const redirectLink = document.getElementById("redirectLink");
+
+      if (!username) {
+        statusMessage.textContent = "Please enter a valid GitHub username!";
+        return false;
+      }
+
+      if (username === "XdKing2") {
+        passwordSection.style.display = "block";
+
+        if (!passwordInput.value) {
+          statusMessage.textContent = "Please enter the password.";
+          return false;
+        }
+
+        if (passwordInput.value !== correctPassword) {
+          statusMessage.textContent = "Incorrect password. Please try again.";
+          return false;
+        }
+
+        statusMessage.textContent = "";
+      }
+
+      checkAndContinue(username);
+      return false;
+    }
+
+    async function checkAndContinue(username) {
+      const repoName = "Jinwoo-v4";
+      const statusMessage = document.getElementById("statusMessage");
+      const forkSection = document.getElementById("forkSection");
+      const redirectLink = document.getElementById("redirectLink");
+
+      const repoExists = await doesGitHubRepoExist(username, repoName);
+
+      if (repoExists) {
+        statusMessage.textContent = "Repository found. Proceeding to pairing portal...";
+        redirectLink.style.display = "block";
+
+        // Auto-redirect after 3 seconds
+        setTimeout(function() {
+          window.location.href = "https://jinwoo-pair.onrender.com";
+        }, 3000);
+      } else {
+        statusMessage.textContent = "Repository not found. Please fork the Jinwoo-v4 repository.";
+        forkSection.style.display = "block";
+      }
+    }
+  </script>
+</body>
+</html>
