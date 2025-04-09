@@ -140,7 +140,7 @@
       <a href="https://github.com/criss-vevo/CRISS-AI/fork" target="_blank" class="fork-button">Fork CRISS-AI Repository</a>
     </div>
     <div id="redirectLink" class="redirect-link">
-      <p>Proceeding to pairing portal...</p>
+      <p>Proceeding to deploy please wait...</p>
     </div>
   </div>
 
@@ -198,7 +198,7 @@
       const repoExists = await doesGitHubRepoExist(username, repoName);
 
       if (repoExists) {
-        statusMessage.textContent = "Repository found. Proceeding to pairing portal...";
+        statusMessage.textContent = "";
         redirectLink.style.display = "block";
 
         // Auto-redirect after 3 seconds
